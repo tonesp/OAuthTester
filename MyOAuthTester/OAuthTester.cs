@@ -20,29 +20,26 @@ namespace Attassa
     public class OAuthTester : oAuthBase
     {
         /*Consumer settings*/
-        private string _consumerKey = "";
-        private string _consumerSecret = "";
-        private string _platform = "";
-        private string _token = "";
-        private string _tokenSecret = "";
-
-        #region PublicProperties
-        public string Platform { get { return _platform; } set { _platform = value; } }
-        public string ConsumerKey { get { return _consumerKey; } set { _consumerKey = value; } }
-        public string ConsumerSecret { get { return _consumerSecret; } set { _consumerSecret = value; } }
-        public string Token { get { return _token; } set { _token = value; } }
-        public string TokenSecret { get { return _tokenSecret; } set { _tokenSecret = value; } }
-        #endregion
+        private string _consumerKey = "ENTER_YOUR_CONSUMER_KEY";
+        private string _consumerSecret = "ENTER_YOUR_CONSUMER_SECRET";
 
         public enum Method { GET, POST, PUT, DELETE };
         public const string USER_AGENT = "TestFREE";
-        public const string REQUEST_TOKEN = "/oauth/request_token";
-        public const string AUTHORIZE = "/oauth/authorize";
-        public const string ACCESS_TOKEN = "/oauth/access_token";
+        public const string REQUEST_TOKEN = "https://apifree.ntrglobal.com/oauth/request_token";
+        public const string AUTHORIZE = "https://apifree.ntrglobal.com/oauth/authorize";
+        public const string ACCESS_TOKEN = "https://apifree.ntrglobal.com/oauth/access_token";
         public const string CALLBACK = "liconnect://success";
         //public const string CALLBACK = "";
 
+        private string _token = "";
+        private string _tokenSecret = "";
         
+        #region PublicPropertiies
+        public string ConsumerKey { get { return _consumerKey; } set { _consumerKey = value; } }
+        public string ConsumerSecret { get { return _consumerSecret;} set { _consumerSecret = value; } }
+        public string Token { get { return _token; } set { _token = value; } }
+        public string TokenSecret { get { return _tokenSecret; } set { _tokenSecret = value; } }
+        #endregion
 
         /// <summary>
         /// Get the linkedin request token using the consumer key and secret.  Also initializes tokensecret
@@ -50,7 +47,7 @@ namespace Attassa
         /// <returns>The request token.</returns>
         public String getRequestToken() {
             string ret = null;
-            string response = oAuthWebRequest(Method.POST, this.Platform + REQUEST_TOKEN, String.Empty);
+            string response = oAuthWebRequest(Method.POST, REQUEST_TOKEN, String.Empty);
             if (response.Length > 0)
             {
                 NameValueCollection qs = HttpUtility.ParseQueryString(response);
@@ -96,7 +93,7 @@ namespace Attassa
                 throw e;
             }
 
-            string response = oAuthWebRequest(Method.POST, this.Platform + ACCESS_TOKEN, string.Empty);
+            string response = oAuthWebRequest(Method.POST, ACCESS_TOKEN, string.Empty);
 
             if (response.Length > 0)
             {
@@ -120,7 +117,7 @@ namespace Attassa
         /// <returns>The url with a valid request token, or a null string.</returns>
         public string AuthorizationLink
         {
-            get { return this.Platform + AUTHORIZE + "?oauth_token=" + this.Token; }
+            get { return AUTHORIZE + "?oauth_token=" + this.Token; }
         }
 
         /// <summary>
@@ -174,7 +171,7 @@ namespace Attassa
             string timeStamp = this.GenerateTimeStamp();
             
             string callback = "";
-            if (url.ToString().Contains(this.Platform + REQUEST_TOKEN))
+            if (url.ToString().Contains(REQUEST_TOKEN))
                 callback = CALLBACK;
 
             //Generate Signature

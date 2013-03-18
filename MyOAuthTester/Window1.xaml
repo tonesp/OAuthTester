@@ -2,23 +2,16 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"  
-    Title="OAuth Tester" ResizeMode="NoResize" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" Height="569" Width="506">
-    <Grid>
-        <Label Content="Choose Platform" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" Name="label3" VerticalAlignment="Top" Width="117" />
-        <ComboBox Height="23" HorizontalAlignment="Left" Margin="155,11,0,0" Name="cboPlatform" VerticalAlignment="Top" Width="290" ItemsSource="{Binding}" IsReadOnly="True">
-            <ComboBoxItem Name="FREE" IsSelected="True">http://apifree.ntrglobal.com</ComboBoxItem>
-            <ComboBoxItem Name="EU">http://apieu.ntrglobal.com</ComboBoxItem>
-        </ComboBox>
-        <Label Content="Consumer Key" Height="28" HorizontalAlignment="Left" Margin="12,40,0,0" Name="label1" VerticalAlignment="Top" Width="129"/>
-        <TextBox Height="23" HorizontalAlignment="Left" Margin="155,37,0,0" Name="txtKey" VerticalAlignment="Top" Width="290" Text="BxX1VELFMwJSuPLTPA1b"/>
-        <Label Content="Consumer Secret" Height="28" HorizontalAlignment="Left" Margin="12,66,0,0" Name="label2" VerticalAlignment="Top" Width="129" />
-        <TextBox Height="23" HorizontalAlignment="Left" Margin="155,66,0,0" Name="txtSecret" VerticalAlignment="Top" Width="290" Text="cnEHMW4cGVQ8472UtMdnSi5KP4iEPfMwKEVnnqoP"/>
+    Title="OAuth Tester" Width="506" Height="569" ResizeMode="NoResize">
+    <StackPanel>
+        <TextBlock Margin="10" FontSize="14">Login/Display:</TextBlock>
+        <Button Margin ="10" Click="goNavigateButton_Click">Login</Button>
+        <Button Margin="10" Click="GetUsers_Click">Show Users</Button>
+        <Button Margin="10" Click="GetDevices_Click">Show Devices</Button>
+        <Button Margin="10" Click="GetSession_Click">Get Session</Button>
+        <TextBlock Margin="10" FontSize="14">Output:</TextBlock>
+        <TextBox Name="txtOutput" Margin="10" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="270" Background="Black" Foreground="SpringGreen" IsEnabled="True"></TextBox>
+    </StackPanel>
 
-        <Button Height="23" HorizontalAlignment="Left" Margin="12,123,0,0" Name="btnLogin" VerticalAlignment="Top" Width="433" Click="login_Click">Login</Button>
-        <Button HorizontalAlignment="Left" Margin="12,152,0,354" Click="GetDevices_Click" Width="130">Show Devices</Button>
-        <Button HorizontalAlignment="Left" Margin="163,152,0,354" Click="GetUsers_Click" Width="130">Show Users</Button>
-        <Button HorizontalAlignment="Left" Margin="315,152,0,354" Click="GetSession_Click" Width="130">Get Session</Button>
-        <TextBlock HorizontalAlignment="Left" Margin="10,200,0,300" FontSize="14" Width="57">Output:</TextBlock>
-        <TextBox HorizontalAlignment="Left" Margin="10,235,0,12" Name="txtOutput" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" Background="Black" Foreground="SpringGreen" IsEnabled="True" Width="474"></TextBox>
-    </Grid>
+
 </Window>
