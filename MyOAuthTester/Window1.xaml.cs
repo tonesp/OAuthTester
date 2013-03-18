@@ -24,10 +24,15 @@ namespace Attassa
         {
             InitializeComponent();
         }
-        private void goNavigateButton_Click(object sender, RoutedEventArgs e)
+
+        private void login_Click(object sender, RoutedEventArgs e)
         {
             try
             {
+                _oauth.ConsumerKey = txtKey.Text;
+                _oauth.ConsumerSecret = txtSecret.Text;
+                _oauth.Platform = cboPlatform.Text;
+
                 String requestToken = _oauth.getRequestToken();
                 txtOutput.Text += "\n" + "Received request token: " + requestToken;
 
