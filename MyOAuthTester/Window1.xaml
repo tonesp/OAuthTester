@@ -1,0 +1,17 @@
+﻿<Window x:Class="Attassa.Window1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"  
+    Title="OAuth Tester" Width="506" Height="569" ResizeMode="NoResize">
+    <StackPanel>
+        <TextBlock Margin="10" FontSize="14">Login/Display:</TextBlock>
+        <Button Margin ="10" Click="goNavigateButton_Click">Login</Button>
+        <Button Margin="10" Click="GetUsers_Click">Show Users</Button>
+        <Button Margin="10" Click="GetDevices_Click">Show Devices</Button>
+        <Button Margin="10" Click="GetSession_Click">Get Session</Button>
+        <TextBlock Margin="10" FontSize="14">Output:</TextBlock>
+        <TextBox Name="txtOutput" Margin="10" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="270" Background="Black" Foreground="SpringGreen" IsEnabled="True"></TextBox>
+    </StackPanel>
+
+
+</Window>
