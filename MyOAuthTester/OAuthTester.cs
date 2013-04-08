@@ -254,7 +254,7 @@ namespace Attassa
             webRequest.ServicePoint.Expect100Continue = false;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
 
-            webRequest.Headers.Add("Authorization", "OAuth realm=\"https://apifree.ntrglobal.com/\",oauth_consumer_key=\"" + this.ConsumerKey + "\",oauth_token=\"" + this.Token + "\",oauth_signature_method=\"HMAC-SHA1\",oauth_signature=\"" + HttpUtility.UrlEncode(sig) + "\",oauth_timestamp=\"" + timeStamp + "\",oauth_nonce=\"" + nonce + "\",oauth_verifier=\"" + this.Verifier + "\", oauth_version=\"1.0\"");            
+            webRequest.Headers.Add("Authorization", "OAuth realm=\"" + this.Platform + "\",oauth_consumer_key=\"" + this.ConsumerKey + "\",oauth_token=\"" + this.Token + "\",oauth_signature_method=\"HMAC-SHA1\",oauth_signature=\"" + HttpUtility.UrlEncode(sig) + "\",oauth_timestamp=\"" + timeStamp + "\",oauth_nonce=\"" + nonce + "\",oauth_verifier=\"" + this.Verifier + "\", oauth_version=\"1.0\"");            
 
             if (postData != null)
             {

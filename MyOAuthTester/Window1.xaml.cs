@@ -61,7 +61,7 @@ namespace Attassa
                 _oauth.Token = txtOAuthToken.Text;
                 _oauth.TokenSecret = txtOAuthTokenSecret.Text;
                 _oauth.Verifier = txtOAuthVerifier.Text;
-                txtOutput.Text = "\n" + _oauth.APIWebRequest("GET", "https://apifree.ntrglobal.com/devices.xml", null);
+                txtOutput.Text = "\n" + _oauth.APIWebRequest("GET", cboPlatform.Text +"/devices.xml" , null);
             }
             catch (Exception exp)
             {
@@ -73,7 +73,7 @@ namespace Attassa
         {
             try
             {
-                txtOutput.Text = "\n" + _oauth.APIWebRequest("GET", "https://apifree.ntrglobal.com/users.xml", null);
+                txtOutput.Text = "\n" + _oauth.APIWebRequest("GET", cboPlatform.Text + "/users.xml", null);
             }
             catch (Exception exp)
             {
@@ -86,9 +86,8 @@ namespace Attassa
             string sPost ="";
             try
             {
-                //sPost = "{support_session:{customer:CustomerName,customer_mail:email@domain.com,language:en}}";
                 sPost = "<support_session><customer>CustomerName</customer><customer_mail>email@domain.com</customer_mail><language>en</language></support_session>";
-                txtOutput.Text = "\n" + _oauth.APIWebRequest("POST", "https://apifree.ntrglobal.com/support_sessions.xml", sPost);
+                txtOutput.Text = "\n" + _oauth.APIWebRequest("POST", cboPlatform.Text +"/support_sessions.xml", sPost);
             }
             catch (Exception exp)
             {

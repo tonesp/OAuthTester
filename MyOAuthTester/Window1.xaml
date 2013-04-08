@@ -7,7 +7,7 @@
         <Label Content="Choose Platform" Height="28" HorizontalAlignment="Left" Margin="13,9,0,0" Name="label3" VerticalAlignment="Top" Width="117" />
         <ComboBox Height="23" HorizontalAlignment="Left" Margin="155,11,0,0" Name="cboPlatform" VerticalAlignment="Top" Width="290" ItemsSource="{Binding}" IsReadOnly="True">
             <ComboBoxItem Name="FREE" IsSelected="True">http://apifree.ntrglobal.com</ComboBoxItem>
-            <!--<ComboBoxItem Name="EU">http://apieu.ntrglobal.com</ComboBoxItem>-->
+            <ComboBoxItem Name="EU">http://apieu.ntrglobal.com</ComboBoxItem>
         </ComboBox>
         <Label Content="Consumer Key" Height="28" HorizontalAlignment="Left" Margin="13,35,0,0" Name="label1" VerticalAlignment="Top" Width="129"/>
         <TextBox Height="23" HorizontalAlignment="Left" Margin="155,37,0,0" Name="txtKey" VerticalAlignment="Top" Width="290" Text=""/>
