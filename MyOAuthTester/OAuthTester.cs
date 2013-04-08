@@ -17,7 +17,7 @@ using System.Text;
 namespace Attassa
 {
 
-    public class OAuthTester : oAuthBase
+    public class oAuthTester : oAuthBase
     {
         /*Consumer settings*/
         private string _consumerKey = "";
@@ -39,7 +39,7 @@ namespace Attassa
         public const string REQUEST_TOKEN = "/oauth/request_token";
         public const string AUTHORIZE = "/oauth/authorize";
         public const string ACCESS_TOKEN = "/oauth/access_token";
-        public const string CALLBACK = "liconnect://success";
+        public const string CALLBACK = "tester://success";
         //public const string CALLBACK = "";
 
         

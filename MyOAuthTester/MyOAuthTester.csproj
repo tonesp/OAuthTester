@@ -94,7 +94,7 @@
       <DependentUpon>AuthorizeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="oAuthBase.cs" />
-    <Compile Include="OAuthTester.cs" />
+    <Compile Include="oAuthTester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

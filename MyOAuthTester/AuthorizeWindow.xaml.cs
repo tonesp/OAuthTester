@@ -20,7 +20,7 @@ namespace Attassa
     /// </summary>
     public partial class AuthorizeWindow : Window
     {
-        private OAuthTester _oauth;
+        private oAuthTester _oauth;
         private String _token;
         private String _verifier;
         private String _tokenSecret;
@@ -49,7 +49,7 @@ namespace Attassa
             }
         }
 
-        public AuthorizeWindow(OAuthTester o)
+        public AuthorizeWindow(oAuthTester o)
         {
             _oauth = o;
             _token = null;
@@ -63,7 +63,7 @@ namespace Attassa
         private void browser_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             this.addressTextBox.Text = e.Uri.ToString();
-            if (e.Uri.Scheme == "liconnect") {
+            if (e.Uri.Scheme == "tester") {
                 string queryParams = e.Uri.Query;
                 if (queryParams.Length > 0)
                 {

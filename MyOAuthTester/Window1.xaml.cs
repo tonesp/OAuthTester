@@ -18,7 +18,7 @@ namespace Attassa
     /// </summary>
     public partial class Window1 : Window
     {
-        private OAuthTester _oauth = new OAuthTester();
+        private oAuthTester _oauth = new oAuthTester();
 
         public Window1()
         {
@@ -40,6 +40,7 @@ namespace Attassa
                 txtOutput.Text += "\n" + "Token was authorized: " + _oauth.Token + " with verifier: " + _oauth.Verifier;
                 String accessToken = _oauth.getAccessToken();
                 txtOutput.Text += "\n" + "Access token was received: " + _oauth.Token;
+                btnLogin.IsEnabled = false;
             }
             catch (Exception exp)
             {
