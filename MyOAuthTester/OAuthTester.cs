@@ -25,6 +25,7 @@ namespace Attassa
         private string _platform = "";
         private string _token = "";
         private string _tokenSecret = "";
+        private string _accessToken = "";
 
         #region PublicProperties
         public string Platform { get { return _platform; } set { _platform = value; } }
@@ -32,6 +33,7 @@ namespace Attassa
         public string ConsumerSecret { get { return _consumerSecret; } set { _consumerSecret = value; } }
         public string Token { get { return _token; } set { _token = value; } }
         public string TokenSecret { get { return _tokenSecret; } set { _tokenSecret = value; } }
+        public string AccessToken { get { return _accessToken; } set { _accessToken = value; } }
         #endregion
 
         public enum Method { GET, POST, PUT, DELETE };
@@ -104,10 +106,12 @@ namespace Attassa
                 if (qs["oauth_token"] != null)
                 {
                     this.Token = qs["oauth_token"];
+                    this._token = this.Token;
                 }
                 if (qs["oauth_token_secret"] != null)
                 {
                     this.TokenSecret = qs["oauth_token_secret"];
+                    this._tokenSecret = this.TokenSecret;
                 }
             }
 

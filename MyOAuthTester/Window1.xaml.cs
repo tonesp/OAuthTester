@@ -35,11 +35,15 @@ namespace Attassa
 
                 String requestToken = _oauth.getRequestToken();
                 txtOutput.Text += "\n" + "Received request token: " + requestToken;
-
                 _oauth.authorizeToken();
                 txtOutput.Text += "\n" + "Token was authorized: " + _oauth.Token + " with verifier: " + _oauth.Verifier;
                 String accessToken = _oauth.getAccessToken();
                 txtOutput.Text += "\n" + "Access token was received: " + _oauth.Token;
+
+                txtOAuthToken.Text = _oauth.Token;
+                txtOAuthTokenSecret.Text = _oauth.TokenSecret;
+                txtOAuthVerifier.Text = _oauth.Verifier;
+
                 btnLogin.IsEnabled = false;
             }
             catch (Exception exp)
@@ -47,11 +51,17 @@ namespace Attassa
                 txtOutput.Text += "\nException: " + exp.Message; 
             }
         }
-        private void GetUsers_Click(object sender, RoutedEventArgs e)
+        private void GetDevices_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                txtOutput.Text = "\n" + _oauth.APIWebRequest("GET", "https://apifree.ntrglobal.com/users.xml", null);
+                _oauth.ConsumerKey = txtKey.Text;
+                _oauth.ConsumerSecret = txtSecret.Text;
+                _oauth.Platform = cboPlatform.Text;
+                _oauth.Token = txtOAuthToken.Text;
+                _oauth.TokenSecret = txtOAuthTokenSecret.Text;
+                _oauth.Verifier = txtOAuthVerifier.Text;
+                txtOutput.Text = "\n" + _oauth.APIWebRequest("GET", "https://apifree.ntrglobal.com/devices.xml", null);
             }
             catch (Exception exp)
             {
@@ -59,11 +69,11 @@ namespace Attassa
             }
 
         }
-        private void GetDevices_Click(object sender, RoutedEventArgs e)
+        private void GetUsers_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                txtOutput.Text = "\n" + _oauth.APIWebRequest("GET", "https://apifree.ntrglobal.com/devices.xml", null);
+                txtOutput.Text = "\n" + _oauth.APIWebRequest("GET", "https://apifree.ntrglobal.com/users.xml", null);
             }
             catch (Exception exp)
             {
