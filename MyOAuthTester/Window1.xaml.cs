@@ -48,7 +48,7 @@ namespace Attassa
             }
             catch (Exception exp)
             {
-                txtOutput.Text += "\nException: " + exp.Message; 
+                txtOutput.Text = "\nException: " + exp.Message; 
             }
         }
         private void GetDevices_Click(object sender, RoutedEventArgs e)
