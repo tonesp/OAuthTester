@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<acounts>
+  <account>
+    <platform>http://apifree.ntrglobal.com</platform>
+    <ConsumerKey></ConsumerKey>
+    <ConsumerSecret></ConsumerSecret>
+    <Token></Token>
+    <TokenSecret></TokenSecret>
+    <Verifier></Verifier>
+  </account>
+</acounts>

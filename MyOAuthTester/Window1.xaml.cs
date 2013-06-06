@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Xml;
 
 namespace MyOAuthTester
 {
@@ -38,6 +39,60 @@ namespace MyOAuthTester
             InitializeComponent();
             cboPlatform.ItemsSource = LoadDataPlatforms();
             cboMethod.ItemsSource = LoadDataMethods();
+            SetTokens();
+        }
+
+        private void SetTokens()
+        {
+            const string file = "AccountInfo.xml";
+            try
+            {
+                var reader = new XmlTextReader(file);
+                while (reader.Read())
+                {
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+                            if (reader.Name.Equals("Platform"))
+                            {
+                                reader.Read(); //Forward one position;
+                                txtPlatform.Text = reader.Value;
+                            }
+                            if (reader.Name.Equals("ConsumerKey"))
+                            {
+                                reader.Read(); //Forward one position;
+                                txtKey.Text = reader.Value;
+                            }
+                            if (reader.Name.Equals("ConsumerSecret"))
+                            {
+                                reader.Read(); //Forward one position;
+                                txtSecret.Text = reader.Value;
+                            }
+                            if (reader.Name.Equals("Token"))
+                            {
+                                reader.Read(); //Forward one position;
+                                txtOAuthToken.Text = reader.Value;
+                            }
+                            if (reader.Name.Equals("TokenSecret"))
+                            {
+                                reader.Read(); //Forward one position;
+                                txtOAuthTokenSecret.Text = reader.Value;
+                            }
+                            if (reader.Name.Equals("Verifier"))
+                            {
+                                reader.Read(); //Forward one position;
+                                txtOAuthVerifier.Text = reader.Value;
+                            }
+                            break;
+                    }
+                }
+            }
+            catch (Exception exp)
+            {
+                txtOutput.Text = "\nUnable to find file:" + file ;
+                txtOutput.Text += "\nException: " + exp.Message;
+            }
+
         }
 
         private static bool IsEmpty(string myObject)
@@ -127,7 +182,7 @@ namespace MyOAuthTester
             txtPlatform.Foreground = Brushes.Black;
             
             _firstTime = false;
-            
+
         }
 
         private void DoAction(object sender, RoutedEventArgs e)

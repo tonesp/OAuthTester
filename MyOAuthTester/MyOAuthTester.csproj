@@ -122,12 +122,16 @@
   <ItemGroup>
     <Resource Include="Images\wcescomm.dll_I0064_0409.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\AccountInfo.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+       Other similar extension points exist, see Microsoft.Common.targets.-->
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
+	<Copy SourceFiles="Res\AccountInfo.xml" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
   </Target>
-  -->
+  
 </Project>
