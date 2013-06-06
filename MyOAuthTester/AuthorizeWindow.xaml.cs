@@ -1,45 +1,20 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Navigation;
-using System.Collections.Specialized;
 using System.Web;
 
-namespace Attassa
+namespace MyOAuthTester
 {
     /// <summary>
     /// Interaction logic for LoginModalWindow.xaml
     /// </summary>
-    public partial class AuthorizeWindow : Window
+    public partial class AuthorizeWindow
     {
-        private oAuthTester _oauth;
-        private String _token;
-        private String _verifier;
-        private String _tokenSecret;
+        private readonly OAuthTester _oauth;
+        private readonly String _tokenSecret;
 
-        public String Token
-        {
-            get
-            {
-                return _token;
-            }
-        }
+        public string Token { get; private set; }
 
-        public String Verifier
-        {
-            get
-            {
-                return _verifier;
-            }
-        }
+        public string Verifier { get; private set; }
 
         public String TokenSecret
         {
@@ -49,36 +24,36 @@ namespace Attassa
             }
         }
 
-        public AuthorizeWindow(oAuthTester o)
+        public AuthorizeWindow(OAuthTester o)
         {
             _oauth = o;
-            _token = null;
+            Token = null;
             InitializeComponent();
-            this.addressTextBox.Text = o.AuthorizationLink;
-            _token = _oauth.Token;
+            addressTextBox.Text = o.AuthorizationLink;
+            Token = _oauth.Token;
             _tokenSecret = _oauth.TokenSecret;
             browser.Navigate(new Uri(_oauth.AuthorizationLink));            
         }
 
-        private void browser_Navigating(object sender, NavigatingCancelEventArgs e)
+        private void BrowserNavigating(object sender, NavigatingCancelEventArgs e)
         {
-            this.addressTextBox.Text = e.Uri.ToString();
+            addressTextBox.Text = e.Uri.ToString();
             if (e.Uri.Scheme == "tester") {
-                string queryParams = e.Uri.Query;
+                var queryParams = e.Uri.Query;
                 if (queryParams.Length > 0)
                 {
                     //Store the Token and Token Secret
-                    NameValueCollection qs = HttpUtility.ParseQueryString(queryParams);
+                    var qs = HttpUtility.ParseQueryString(queryParams);
                     if (qs["oauth_token"] != null)
                     {
-                        _token = qs["oauth_token"];
+                        Token = qs["oauth_token"];
                     }
                     if (qs["oauth_verifier"] != null)
                     {
-                        _verifier = qs["oauth_verifier"];
+                        Verifier = qs["oauth_verifier"];
                     }
                 }
-                this.Close();
+                Close();
             }            
         }
     }

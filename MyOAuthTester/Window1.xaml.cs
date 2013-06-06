@@ -1,43 +1,96 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Forms;
-namespace Attassa
+
+namespace MyOAuthTester
 {
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class Window1 : Window
+    public partial class Window1
     {
-        private oAuthTester _oauth = new oAuthTester();
+        private readonly OAuthTester _oauth = new OAuthTester();
+        private bool _firstTime = true;
+
+        private static IEnumerable<string> LoadDataPlatforms()
+        {
+            string[] strArray ={
+                "http://apifree.ntrglobal.com",
+                "http://apieu.ntrglobal.com",
+                "http://212.0.111.116"
+                };
+            return strArray;
+        }
+        private static IEnumerable<string> LoadDataMethods()
+        {
+            string[] strArray ={
+                "GET",
+                "POST",
+                "PUT"
+                };
+            return strArray;
+        }
 
         public Window1()
         {
             InitializeComponent();
+            cboPlatform.ItemsSource = LoadDataPlatforms();
+            cboMethod.ItemsSource = LoadDataMethods();
         }
 
-        private void login_Click(object sender, RoutedEventArgs e)
+        private static bool IsEmpty(string myObject)
         {
-            try
+            if (myObject == "")
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        private bool CheckValidOauthParams()
+        {
+            if (IsEmpty(txtKey.Text)) return false;
+            if (IsEmpty(txtSecret.Text)) return false;
+            if (IsEmpty(txtPlatform.Text)) return false;
+            if (IsEmpty(txtOAuthToken.Text)) return false;
+            if (IsEmpty(txtOAuthTokenSecret.Text)) return false;
+            if (IsEmpty(txtOAuthVerifier.Text)) return false;
+            return true;
+        }
+
+        private bool InitializeOauthValues()
+        {
+            if (CheckValidOauthParams())
             {
                 _oauth.ConsumerKey = txtKey.Text;
                 _oauth.ConsumerSecret = txtSecret.Text;
-                _oauth.Platform = cboPlatform.Text;
+                _oauth.Platform = txtPlatform.Text;
+                _oauth.Token = txtOAuthToken.Text;
+                _oauth.TokenSecret = txtOAuthTokenSecret.Text;
+                _oauth.Verifier = txtOAuthVerifier.Text;
+                _oauth.Platform = txtPlatform.Text;
+                return true;
+            }
+            txtOutput.Text = "\nPlease, fill your oAuth Params";
+            return false;
+        }
 
-                String requestToken = _oauth.getRequestToken();
+        
+
+        private void LoginClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!InitializeOauthValues()) return;
+
+                var requestToken = _oauth.GetRequestToken();
                 txtOutput.Text += "\n" + "Received request token: " + requestToken;
-                _oauth.authorizeToken();
+                _oauth.AuthorizeToken();
                 txtOutput.Text += "\n" + "Token was authorized: " + _oauth.Token + " with verifier: " + _oauth.Verifier;
-                String accessToken = _oauth.getAccessToken();
+                //var accessToken = _oauth.getAccessToken();
                 txtOutput.Text += "\n" + "Access token was received: " + _oauth.Token;
 
                 txtOAuthToken.Text = _oauth.Token;
@@ -51,47 +104,55 @@ namespace Attassa
                 txtOutput.Text = "\nException: " + exp.Message; 
             }
         }
-        private void GetDevices_Click(object sender, RoutedEventArgs e)
+
+        private void TxtPlatform_OnGotFocus(object sender, RoutedEventArgs e)
         {
-            try
+            if (_firstTime)
             {
-                _oauth.ConsumerKey = txtKey.Text;
-                _oauth.ConsumerSecret = txtSecret.Text;
-                _oauth.Platform = cboPlatform.Text;
-                _oauth.Token = txtOAuthToken.Text;
-                _oauth.TokenSecret = txtOAuthTokenSecret.Text;
-                _oauth.Verifier = txtOAuthVerifier.Text;
-                txtOutput.Text = "\n" + _oauth.APIWebRequest("GET", cboPlatform.Text +"/devices.xml" , null);
+                txtPlatform.Text = "";
+                txtPlatform.Foreground = Brushes.Black;
             }
-            catch (Exception exp)
-            {
-                txtOutput.Text = "\nException: " + exp.Message;
-            }
+            _firstTime = false;
+        }
+        private void TxtPlatform_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (!Uri.IsWellFormedUriString(txtPlatform.Text, UriKind.Absolute))
+                txtPlatform.Text = "http://apifree.ntrglobal.com";
+        }
+
+        private void CboPlatform_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            txtPlatform.Text = cboPlatform.SelectedValue.ToString();
+            txtPlatform.Foreground = Brushes.Black;
+            lblPlatform.Content = cboPlatform.SelectedValue.ToString();
+            _firstTime = false;
 
         }
-        private void GetUsers_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                txtOutput.Text = "\n" + _oauth.APIWebRequest("GET", cboPlatform.Text + "/users.xml", null);
-            }
-            catch (Exception exp)
-            {
-                txtOutput.Text = "\nException: " + exp.Message;
-            }
 
-        }
-        private void GetSession_Click(object sender, RoutedEventArgs e)
+        private void DoAction(object sender, RoutedEventArgs e)
         {
-            string sPost ="";
+            if (!InitializeOauthValues()) return;
+            if (cboMethod.SelectedIndex == -1) return;
+            var sMethod = cboMethod.SelectedValue.ToString();
+            var sUrl = _oauth.Platform + txtURLPOST.Text;
             try
             {
-                sPost = "<support_session><customer>CustomerName</customer><customer_mail>email@domain.com</customer_mail><language>en</language></support_session>";
-                txtOutput.Text = "\n" + _oauth.APIWebRequest("POST", cboPlatform.Text +"/support_sessions.xml", sPost);
+                switch (sMethod)
+                {
+                    case "GET":
+                        txtOutput.Text = sUrl;
+                        txtOutput.Text += "\n" + _oauth.ApiWebRequest("GET", sUrl, null);
+                        break;
+                    default: //"POST", "PUT":
+                        txtOutput.Text = sUrl;
+                        txtOutput.Text += "\n" + _oauth.ApiWebRequest(sMethod, sUrl, txtBodyPOST.ToString());
+                        break;
+                }
             }
             catch (Exception exp)
             {
-                txtOutput.Text = "\nException: " + exp.Message;
+                txtOutput.Text = sUrl;
+                txtOutput.Text += "\nException: " + exp.Message;
             }
         }
     }

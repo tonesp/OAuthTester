@@ -5,19 +5,15 @@
 */
 
 using System;
-using System.Data;
-using System.Configuration;
 using System.Web;
 using System.Net;
 using System.IO;
-using System.Collections.Specialized;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 
-namespace Attassa
+namespace MyOAuthTester
 {
 
-    public class oAuthTester : oAuthBase
+    public class OAuthTester : OAuthBase
     {
         /*Consumer settings*/
         private string _consumerKey = "";
@@ -37,11 +33,11 @@ namespace Attassa
         #endregion
 
         public enum Method { GET, POST, PUT, DELETE };
-        public const string USER_AGENT = "TestFREE";
-        public const string REQUEST_TOKEN = "/oauth/request_token";
-        public const string AUTHORIZE = "/oauth/authorize";
-        public const string ACCESS_TOKEN = "/oauth/access_token";
-        public const string CALLBACK = "tester://success";
+        public const string UserAgent = "TestFREE";
+        public const string RequestTokenUrl = "/oauth/request_token";
+        public const string AuthorizeUrl = "/oauth/authorize";
+        public const string AccessTokenUrl = "/oauth/access_token";
+        public const string Callback = "tester://success";
         //public const string CALLBACK = "";
 
         
@@ -50,17 +46,17 @@ namespace Attassa
         /// Get the linkedin request token using the consumer key and secret.  Also initializes tokensecret
         /// </summary>
         /// <returns>The request token.</returns>
-        public String getRequestToken() {
+        public String GetRequestToken() {
             string ret = null;
-            string response = oAuthWebRequest(Method.POST, this.Platform + REQUEST_TOKEN, String.Empty);
+            var response = OAuthWebRequest(Method.POST, Platform + RequestTokenUrl, String.Empty);
             if (response.Length > 0)
             {
-                NameValueCollection qs = HttpUtility.ParseQueryString(response);
+                var qs = HttpUtility.ParseQueryString(response);
                 if (qs["oauth_token"] != null)
                 {
-                    this.Token = qs["oauth_token"];
-                    this.TokenSecret = qs["oauth_token_secret"];
-                    ret = this.Token;
+                    Token = qs["oauth_token"];
+                    TokenSecret = qs["oauth_token_secret"];
+                    ret = Token;
                 }
             }
             return ret;        
@@ -70,48 +66,49 @@ namespace Attassa
         /// Authorize the token by showing the dialog
         /// </summary>
         /// <returns>The request token.</returns>
-        public String authorizeToken() {
+        public String AuthorizeToken() {
             if (string.IsNullOrEmpty(Token))
             {
-                Exception e = new Exception("The request token is not set");
+                var e = new Exception("The request token is not set");
                 throw e;
             }
 
-            AuthorizeWindow aw = new AuthorizeWindow(this);
+            var aw = new AuthorizeWindow(this);
             aw.ShowDialog();
             Token = aw.Token;
             Verifier = aw.Verifier;
             if (!string.IsNullOrEmpty(Verifier))
+            {
                 return Token;
-            else 
-                return null;
+            }
+            return null;
         }
 
         /// <summary>
         /// Get the access token
         /// </summary>
         /// <returns>The access token.</returns>        
-        public String getAccessToken() {
+        public String GetAccessToken() {
             if (string.IsNullOrEmpty(Token) || string.IsNullOrEmpty(Verifier))
             {
-                Exception e = new Exception("The request token and verifier were not set");
+                var e = new Exception("The request token and verifier were not set");
                 throw e;
             }
 
-            string response = oAuthWebRequest(Method.POST, this.Platform + ACCESS_TOKEN, string.Empty);
+            string response = OAuthWebRequest(Method.POST, Platform + AccessTokenUrl, string.Empty);
 
             if (response.Length > 0)
             {
-                NameValueCollection qs = HttpUtility.ParseQueryString(response);
+                var qs = HttpUtility.ParseQueryString(response);
                 if (qs["oauth_token"] != null)
                 {
-                    this.Token = qs["oauth_token"];
-                    this._token = this.Token;
+                    Token = qs["oauth_token"];
+                    _token = Token;
                 }
                 if (qs["oauth_token_secret"] != null)
                 {
-                    this.TokenSecret = qs["oauth_token_secret"];
-                    this._tokenSecret = this.TokenSecret;
+                    TokenSecret = qs["oauth_token_secret"];
+                    _tokenSecret = TokenSecret;
                 }
             }
 
@@ -124,7 +121,7 @@ namespace Attassa
         /// <returns>The url with a valid request token, or a null string.</returns>
         public string AuthorizationLink
         {
-            get { return this.Platform + AUTHORIZE + "?oauth_token=" + this.Token; }
+            get { return Platform + AuthorizeUrl + "?oauth_token=" + Token; }
         }
 
         /// <summary>
@@ -134,11 +131,11 @@ namespace Attassa
         /// <param name="url">The full url, including the querystring.</param>
         /// <param name="postData">Data to post (querystring format)</param>
         /// <returns>The web server response.</returns>
-        public string oAuthWebRequest(Method method, string url, string postData)
+        public string OAuthWebRequest(Method method, string url, string postData)
         {
-            string outUrl = "";
-            string querystring = "";
-            string ret = "";
+            string outUrl;
+            string querystring;
+            var ret = "";
 
             //Setup postData for signing.
             //Add the postData to the querystring.
@@ -147,20 +144,20 @@ namespace Attassa
                 if (postData.Length > 0)
                 {
                     //Decode the parameters and re-encode using the oAuth UrlEncode method.
-                    NameValueCollection qs = HttpUtility.ParseQueryString(postData);
+                    var qs = HttpUtility.ParseQueryString(postData);
                     postData = "";
-                    foreach (string key in qs.AllKeys)
+                    foreach (var key in qs.AllKeys)
                     {
                         if (postData.Length > 0)
                         {
                             postData += "&";
                         }
                         qs[key] = HttpUtility.UrlDecode(qs[key]);
-                        qs[key] = this.UrlEncode(qs[key]);
+                        qs[key] = UrlEncode(qs[key]);
                         postData += key + "=" + qs[key];
 
                     }
-                    if (url.IndexOf("?") > 0)
+                    if (url.IndexOf("?", StringComparison.Ordinal) > 0)
                     {
                         url += "&";
                     }
@@ -172,21 +169,21 @@ namespace Attassa
                 }
             }
 
-            Uri uri = new Uri(url);
+            var uri = new Uri(url);
 
-            string nonce = this.GenerateNonce();
-            string timeStamp = this.GenerateTimeStamp();
+            string nonce = GenerateNonce();
+            string timeStamp = GenerateTimeStamp();
             
             string callback = "";
-            if (url.ToString().Contains(this.Platform + REQUEST_TOKEN))
-                callback = CALLBACK;
+            if (url.Contains(Platform + RequestTokenUrl))
+                callback = Callback;
 
             //Generate Signature
-            string sig = this.GenerateSignature(uri,
-                this.ConsumerKey,
-                this.ConsumerSecret,
-                this.Token,
-                this.TokenSecret,
+            string sig = GenerateSignature(uri,
+                ConsumerKey,
+                ConsumerSecret,
+                Token,
+                TokenSecret,
                 method.ToString(),
                 timeStamp,
                 nonce,
@@ -222,20 +219,20 @@ namespace Attassa
         /// <param name="url"></param>
         /// <param name="postData"></param>
         /// <returns></returns>
-        public string APIWebRequest(string method, string url, string postData)
+        public string ApiWebRequest(string method, string url, string postData)
         {
-            Uri uri = new Uri(url);
-            string nonce = this.GenerateNonce();
-            string timeStamp = this.GenerateTimeStamp();
+            var uri = new Uri(url);
+            var nonce = GenerateNonce();
+            var timeStamp = GenerateTimeStamp();
 
             string outUrl, querystring;
 
             //Generate Signature
-            string sig = this.GenerateSignature(uri,
-                this.ConsumerKey,
-                this.ConsumerSecret,
-                this.Token,
-                this.TokenSecret,
+            var sig = GenerateSignature(uri,
+                ConsumerKey,
+                ConsumerSecret,
+                Token,
+                TokenSecret,
                 method,
                 timeStamp,
                 nonce,
@@ -243,33 +240,38 @@ namespace Attassa
                 out outUrl,
                 out querystring);
 
-            HttpWebRequest webRequest = null;
-
-            webRequest = System.Net.WebRequest.Create(url) as HttpWebRequest;
-            webRequest.Method = method;
-            webRequest.Credentials = CredentialCache.DefaultCredentials;
-            webRequest.AllowWriteStreamBuffering = true;
-            webRequest.ContentType = "text/xml";
-            webRequest.PreAuthenticate = true;
-            webRequest.ServicePoint.Expect100Continue = false;
+            var webRequest = System.Net.WebRequest.Create(url) as HttpWebRequest;
+            if (webRequest != null)
+            {
+                webRequest.Method = method;
+                webRequest.Credentials = CredentialCache.DefaultCredentials;
+                webRequest.AllowWriteStreamBuffering = true;
+                webRequest.ContentType = "text/xml";
+                webRequest.PreAuthenticate = true;
+                webRequest.ServicePoint.Expect100Continue = false;
+            }
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
 
-            webRequest.Headers.Add("Authorization", "OAuth realm=\"" + this.Platform + "\",oauth_consumer_key=\"" + this.ConsumerKey + "\",oauth_token=\"" + this.Token + "\",oauth_signature_method=\"HMAC-SHA1\",oauth_signature=\"" + HttpUtility.UrlEncode(sig) + "\",oauth_timestamp=\"" + timeStamp + "\",oauth_nonce=\"" + nonce + "\",oauth_verifier=\"" + this.Verifier + "\", oauth_version=\"1.0\"");            
-
-            if (postData != null)
+            string responseData = null;
+            if (webRequest != null)
             {
-                byte[] fileToSend = Encoding.UTF8.GetBytes(postData);
-                webRequest.ContentLength = fileToSend.Length;
+                webRequest.Headers.Add("Authorization", "OAuth realm=\"" + Platform + "\",oauth_consumer_key=\"" + ConsumerKey + "\",oauth_token=\"" + Token + "\",oauth_signature_method=\"HMAC-SHA1\",oauth_signature=\"" + HttpUtility.UrlEncode(sig) + "\",oauth_timestamp=\"" + timeStamp + "\",oauth_nonce=\"" + nonce + "\",oauth_verifier=\"" + Verifier + "\", oauth_version=\"1.0\"");            
 
-                Stream reqStream = webRequest.GetRequestStream();
+                if (postData != null)
+                {
+                    var fileToSend = Encoding.UTF8.GetBytes(postData);
+                    webRequest.ContentLength = fileToSend.Length;
 
-                reqStream.Write(fileToSend, 0, fileToSend.Length);
-                reqStream.Close();
+                    var reqStream = webRequest.GetRequestStream();
+
+                    reqStream.Write(fileToSend, 0, fileToSend.Length);
+                    reqStream.Close();
+                }
+
+                responseData = WebResponseGet(webRequest);
             }
 
-            string returned = WebResponseGet(webRequest);
-
-            return returned;
+            return responseData;
         }
 
 
@@ -282,39 +284,33 @@ namespace Attassa
         /// <returns>The web server response.</returns>
         public string WebRequest(Method method, string url, string postData)
         {
-            HttpWebRequest webRequest = null;
-            StreamWriter requestWriter = null;
             string responseData = "";
 
-            webRequest = System.Net.WebRequest.Create(url) as HttpWebRequest;
-            webRequest.Method = method.ToString();
-            webRequest.ServicePoint.Expect100Continue = false;
-            webRequest.UserAgent  = USER_AGENT;
-            webRequest.Timeout = 20000;
-
-            if (method == Method.POST)
+            var webRequest = System.Net.WebRequest.Create(url) as HttpWebRequest;
+            if (webRequest != null)
             {
-                webRequest.ContentType = "application/x-www-form-urlencoded";
+                webRequest.Method = method.ToString();
+                webRequest.ServicePoint.Expect100Continue = false;
+                webRequest.UserAgent  = UserAgent;
+                webRequest.Timeout = 20000;
 
-                requestWriter = new StreamWriter(webRequest.GetRequestStream());
-                try
+                if (method == Method.POST)
                 {
-                    requestWriter.Write(postData);
+                    webRequest.ContentType = "application/x-www-form-urlencoded";
+
+                    var requestWriter = new StreamWriter(webRequest.GetRequestStream());
+                    try
+                    {
+                        requestWriter.Write(postData);
+                    }
+                    finally
+                    {
+                        requestWriter.Close();
+                    }
                 }
-                catch
-                {
-                    throw;
-                }
-                finally
-                {
-                    requestWriter.Close();
-                    requestWriter = null;
-                }
+
+                responseData = WebResponseGet(webRequest);
             }
-
-            responseData = WebResponseGet(webRequest);
-
-            webRequest = null;
 
             return responseData;
 
@@ -328,22 +324,22 @@ namespace Attassa
         public string WebResponseGet(HttpWebRequest webRequest)
         {
             StreamReader responseReader = null;
-            string responseData = "";
+            string responseData = null;
 
             try
             {
-                responseReader = new StreamReader(webRequest.GetResponse().GetResponseStream());
-                responseData = responseReader.ReadToEnd();
-            }
-            catch (Exception e)
-            {
-                throw e;
+                if (webRequest != null) responseReader = new StreamReader(webRequest.GetResponse().GetResponseStream());
+                if (responseReader != null) responseData = responseReader.ReadToEnd();
             }
             finally
             {
-                webRequest.GetResponse().GetResponseStream().Close();
-                responseReader.Close();
-                responseReader = null;
+                if (webRequest != null)
+                {
+                    var responseStream = webRequest.GetResponse().GetResponseStream();
+                    if (responseStream != null)
+                        responseStream.Close();
+                }
+                if (responseReader != null) responseReader.Close();
             }
 
             return responseData;
