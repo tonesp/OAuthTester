@@ -7,13 +7,13 @@
             <TabItem Header="Info Account" Name="tabInfo">
                 <Grid Height="252" Width="475">
                     <Label Content="Type / Choose Platform" Height="28" HorizontalAlignment="Left" Margin="13,10,0,0" Name="label3" VerticalAlignment="Top" Width="136" />
-                    <TextBox Foreground="LightGray" Height="23" HorizontalAlignment="Left" Margin="155,13,0,0" Name="txtPlatform" Text="http://apifree.ntrglobal.com" VerticalAlignment="Top" Width="185" GotFocus="TxtPlatform_OnGotFocus" LostFocus="TxtPlatform_OnLostFocus"/>
+                    <TextBox Foreground="LightGray" Height="23" HorizontalAlignment="Left" Margin="155,13,0,0" Name="txtPlatform" Text="http://apifree.ntrglobal.com" VerticalAlignment="Top" Width="185" GotFocus="TxtPlatform_OnGotFocus" LostFocus="TxtPlatform_OnLostFocus" TextChanged="TxtPlatformTextChanged" />
                     <ComboBox Height="23" HorizontalAlignment="Right" IsReadOnly="True" ItemsSource="{Binding}" Margin="0,10,31,0" Name="cboPlatform" VerticalAlignment="Top" Width="99" SelectionChanged="CboPlatform_OnSelectionChanged" />
                     <Label Content="Consumer Key" Height="28" HorizontalAlignment="Left" Margin="13,36,0,0" Name="label1" VerticalAlignment="Top" Width="129" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="155,38,0,0" Name="txtKey" Text="" VerticalAlignment="Top" Width="290" />
                     <Label Content="Consumer Secret" Height="28" HorizontalAlignment="Left" Margin="12,65,0,0" Name="label2" VerticalAlignment="Top" Width="129" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="155,67,0,0" Name="txtSecret" Text="" VerticalAlignment="Top" Width="290" />
-                    <Button Content="Get Tokens" Height="23" HorizontalAlignment="Left" Margin="13,96,0,0" Name="btnLogin" VerticalAlignment="Top" Width="432" Click="LoginClick" />
+                    <Button Content="Get Tokens" Height="23" HorizontalAlignment="Left" Margin="13,96,0,0" Name="btnGetTokens" VerticalAlignment="Top" Width="432" Click="GetTokensClick" />
                     <Label Content="oAuthToken" Height="28" HorizontalAlignment="Left" Margin="13,124,0,0" Name="label4" VerticalAlignment="Top" Width="129" />
                     <TextBox Height="23" HorizontalAlignment="Left" Margin="155,126,0,0" Name="txtOAuthToken" Text="" VerticalAlignment="Top" Width="290" />
                     <Label Content="oAuthTokenSecret" Height="28" HorizontalAlignment="Left" Margin="13,153,0,0" Name="label5" VerticalAlignment="Top" Width="129" />
@@ -26,10 +26,10 @@
             <TabItem Header="Actions" Name="tabPost">
                 <Grid>
                     <Label Content="URL" Height="28" HorizontalAlignment="Left" Margin="13,10,0,0" Name="lblURLPost" VerticalAlignment="Top" Width="32" />
-                    <TextBox Height="23" HorizontalAlignment="Left" Margin="239,12,0,0" Name="txtURLPOST" Text="/support_sessions.xml" VerticalAlignment="Top" Width="212" />
+                    <TextBox Height="23" HorizontalAlignment="Left" Margin="239,12,0,0" Name="txtURLPOST" Text="" VerticalAlignment="Top" Width="212" TextChanged="TxtUrlpostTextChanged" />
                     <Button Content="Send" HorizontalAlignment="Left" Margin="326,216,0,6" Width="125" Click="DoAction"/>
                     <Label Content="Body" Height="26" HorizontalAlignment="Left" Margin="13,70,0,0" Name="lblBody" VerticalAlignment="Top" Width="40" />
-                    <TextBox Height="115" HorizontalAlignment="Left" Margin="13,95,0,0" Name="txtBodyPOST" VerticalAlignment="Top" Width="438" Text="&lt;support_session&gt;&lt;customer&gt;CustomerName&lt;/customer&gt;&lt;customer_mail&gt;email@domain.com&lt;/customer_mail&gt;&lt;language&gt;en&lt;/language&gt;&lt;/support_session&gt;" AcceptsReturn="True" TextWrapping="Wrap" AcceptsTab="True" />
+                    <TextBox Height="115" HorizontalAlignment="Left" Margin="13,95,0,0" Name="txtBodyPOST" VerticalAlignment="Top" Width="438" Text="" AcceptsReturn="True" TextWrapping="Wrap" AcceptsTab="True" />
                     <Label Content="Method" Height="28" HorizontalAlignment="Left" Margin="13,39,0,0" Name="lblMethod" VerticalAlignment="Top" Width="51" />
                     <ComboBox Height="23" HorizontalAlignment="Left" Margin="70,39,0,0" Name="cboMethod" VerticalAlignment="Top" Width="120" />
                     <Label Content="http://apifree.ntrglobal.com" Height="28" HorizontalAlignment="Left" Margin="71,10,0,0" Name="lblPlatform" VerticalAlignment="Top" Width="162" />

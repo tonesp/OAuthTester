@@ -78,26 +78,27 @@ namespace MyOAuthTester
             return false;
         }
 
-        
 
-        private void LoginClick(object sender, RoutedEventArgs e)
+
+        private void GetTokensClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (!InitializeOauthValues()) return;
+                _oauth.ConsumerKey = txtKey.Text;
+                _oauth.ConsumerSecret = txtSecret.Text;
+                _oauth.Platform = txtPlatform.Text;
 
                 var requestToken = _oauth.GetRequestToken();
                 txtOutput.Text += "\n" + "Received request token: " + requestToken;
                 _oauth.AuthorizeToken();
                 txtOutput.Text += "\n" + "Token was authorized: " + _oauth.Token + " with verifier: " + _oauth.Verifier;
-                //var accessToken = _oauth.getAccessToken();
                 txtOutput.Text += "\n" + "Access token was received: " + _oauth.Token;
 
                 txtOAuthToken.Text = _oauth.Token;
                 txtOAuthTokenSecret.Text = _oauth.TokenSecret;
                 txtOAuthVerifier.Text = _oauth.Verifier;
 
-                btnLogin.IsEnabled = false;
+                btnGetTokens.IsEnabled = false;
             }
             catch (Exception exp)
             {
@@ -124,9 +125,9 @@ namespace MyOAuthTester
         {
             txtPlatform.Text = cboPlatform.SelectedValue.ToString();
             txtPlatform.Foreground = Brushes.Black;
-            lblPlatform.Content = cboPlatform.SelectedValue.ToString();
+            
             _firstTime = false;
-
+            
         }
 
         private void DoAction(object sender, RoutedEventArgs e)
@@ -154,6 +155,22 @@ namespace MyOAuthTester
                 txtOutput.Text = sUrl;
                 txtOutput.Text += "\nException: " + exp.Message;
             }
+        }
+
+        private void TxtUrlpostTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var sUrl = txtURLPOST.Text;
+            switch (sUrl)
+            {
+                case "/support_sessions.xml":
+                    txtBodyPOST.Text = "<support_session><customer>CustomerName</customer><customer_mail>email@domain.com</customer_mail><language>en</language></support_session>";
+                    break;
+            }
+        }
+
+        private void TxtPlatformTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!_firstTime) lblPlatform.Content = txtPlatform.Text;
         }
     }
 }
